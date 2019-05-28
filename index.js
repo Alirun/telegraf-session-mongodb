@@ -18,7 +18,11 @@ class TelegrafMongoSession {
     }
 
     async middleware(ctx, next) {
-        const key = `${ctx.chat.id}:${ctx.from.id}`;
+        const key = ctx.from && ctx.chat && `${ctx.chat.id}:${ctx.from.id}`;
+        if (!key) {
+            return next()
+        }
+
         const session = await this.getSession(key);
 
         ctx[this.options.sessionName] = session;
